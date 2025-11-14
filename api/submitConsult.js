@@ -21,24 +21,37 @@ export default async function handler(req, res) {
     if (!name || !phone || !message)
       return res.status(400).json({ error: "입력값 부족" });
 
-    // 🔥🔥🔥 여기서 IP를 다시 가져와서 undefined 방지!!
+    // 🔥 1) IP 가져오기
     const ip =
       req.headers["x-forwarded-for"]?.split(",")[0] ||
       req.socket?.remoteAddress ||
       "unknown";
 
-    // 1️⃣ 상담 Firestore 저장
+    // 🔥 2) IP 중복 검사
+    const ipDoc = await db.collection("ipRecords").doc(ip).get();
+    if (ipDoc.exists) {
+      return res.status(403).json({
+        error: "이미 상담 신청이 완료된 IP입니다. 중복 접수가 제한됩니다.",
+      });
+    }
+
+    // 🔥 3) IP 기록 저장
+    await db.collection("ipRecords").doc(ip).set({
+      createdAt: new Date(),
+    });
+
+    // 🔥 4) 상담 Firestore 저장
     await db.collection("consultRequests").add({
       name,
       phone,
       debt,
       payment,
       message,
-      ip, // 이제 undefined 아님!
+      ip,
       createdAt: new Date(),
     });
 
-    // 2️⃣ 텔레그램 관리자 알림
+    // 🔥 5) 텔레그램 관리자 알림
     const text =
       "📢 상담 접수 알림\n\n" +
       `👤 이름: ${name}\n` +
@@ -61,7 +74,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // 3️⃣ Google Sheets 저장 여부
+    // 🔥 6) Google Sheets 저장
     if (process.env.SHEET_ID) {
       await saveToSheet({ name, phone, debt, payment, message });
     }
@@ -73,8 +86,7 @@ export default async function handler(req, res) {
   }
 }
 
-
-// 🔥 Google Sheets 저장 함수 (옵션)
+// 🔥 Google Sheets 저장 함수
 async function saveToSheet({ name, phone, debt, payment, message }) {
   const { google } = await import("googleapis");
 
