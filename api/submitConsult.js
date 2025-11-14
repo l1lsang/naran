@@ -16,10 +16,16 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "POST only" });
 
   try {
-    const { name, phone, debt, payment, message, ip } = req.body;
+    const { name, phone, debt, payment, message } = req.body;
 
     if (!name || !phone || !message)
       return res.status(400).json({ error: "입력값 부족" });
+
+    // 🔥🔥🔥 여기서 IP를 다시 가져와서 undefined 방지!!
+    const ip =
+      req.headers["x-forwarded-for"]?.split(",")[0] ||
+      req.socket?.remoteAddress ||
+      "unknown";
 
     // 1️⃣ 상담 Firestore 저장
     await db.collection("consultRequests").add({
@@ -28,7 +34,7 @@ export default async function handler(req, res) {
       debt,
       payment,
       message,
-      ip,
+      ip, // 이제 undefined 아님!
       createdAt: new Date(),
     });
 
@@ -55,7 +61,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // 3️⃣ Google Sheets 저장(옵션)
+    // 3️⃣ Google Sheets 저장 여부
     if (process.env.SHEET_ID) {
       await saveToSheet({ name, phone, debt, payment, message });
     }
@@ -66,6 +72,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: err.message });
   }
 }
+
 
 // 🔥 Google Sheets 저장 함수 (옵션)
 async function saveToSheet({ name, phone, debt, payment, message }) {
