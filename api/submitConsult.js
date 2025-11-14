@@ -21,24 +21,33 @@ export default async function handler(req, res) {
     if (!name || !phone || !message)
       return res.status(400).json({ error: "입력값 부족" });
 
-    // 🔥 1) IP 가져오기
+    // 🔥 1) IP 추출
     const ip =
       req.headers["x-forwarded-for"]?.split(",")[0] ||
       req.socket?.remoteAddress ||
       "unknown";
 
-    // 🔥 2) IP 중복 검사
-    const ipDoc = await db.collection("ipRecords").doc(ip).get();
-    if (ipDoc.exists) {
-      return res.status(403).json({
-        error: "이미 상담 신청이 완료된 IP입니다. 중복 접수가 제한됩니다.",
+    // 🔥 2) 화이트리스트 확인
+    const whiteList = process.env.IP_WHITELIST
+      ? process.env.IP_WHITELIST.split(",").map((v) => v.trim())
+      : [];
+
+    const isWhiteListed = whiteList.includes(ip);
+
+    // 🔥 3) 화이트리스트가 아니면 → 중복 접수 차단
+    if (!isWhiteListed) {
+      const ipDoc = await db.collection("ipRecords").doc(ip).get();
+      if (ipDoc.exists) {
+        return res.status(403).json({
+          error: "이미 상담 신청이 완료된 IP입니다. 중복 접수가 제한됩니다.",
+        });
+      }
+
+      // IP 기록 저장
+      await db.collection("ipRecords").doc(ip).set({
+        createdAt: new Date(),
       });
     }
-
-    // 🔥 3) IP 기록 저장
-    await db.collection("ipRecords").doc(ip).set({
-      createdAt: new Date(),
-    });
 
     // 🔥 4) 상담 Firestore 저장
     await db.collection("consultRequests").add({
@@ -86,7 +95,7 @@ export default async function handler(req, res) {
   }
 }
 
-// 🔥 Google Sheets 저장 함수
+// 🔥 Google Sheets 기록 함수
 async function saveToSheet({ name, phone, debt, payment, message }) {
   const { google } = await import("googleapis");
 
