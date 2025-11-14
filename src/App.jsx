@@ -212,7 +212,7 @@ function App() {
   <div className="피해1">
 <p><u> 다양한 2차 피해를 유발하는 추가 사기가 발생하고 있습니다. </u></p>
 <p><u>법무법인 나란, 피해회복전문로펌에서는 조속한 피해 대응이 가능합니다.</u></p></div>
-<img src={상담} className="밑줄"></img>
+<img src={상담} className="밑줄 hidden"></img>
 </div>
 </section>
 <section>
