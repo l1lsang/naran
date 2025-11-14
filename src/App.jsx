@@ -2,12 +2,20 @@ import React, { useEffect } from "react";
 import logo from './logo.svg';
 import './App.css';
 import 마우스 from './img/마우스.jpg';
-import 상담신청 from './img/상담신청.png';
 import 경고 from './img/photo_2025-11-11_16-33-36.jpg';
-//import roll1 from "./img/roll1.jpg";
-//import roll2 from "./img/roll2.jpg";
-//import roll3 from "./img/roll3.jpg";
-//import roll4 from "./img/roll4.jpg";
+import roll1 from "./img/1.jpg";
+import roll2 from "./img/2.jpg";
+import roll3 from "./img/3.jpg";
+import roll4 from "./img/4.jpg";
+import roll5 from "./img/5.jpg";
+import roll6 from "./img/6.jpg";
+import roll7 from "./img/7.jpg";
+import roll8 from "./img/8.jpg";
+import roll9 from "./img/9.jpg";
+import roll10 from "./img/10.jpg";
+import roll11 from "./img/11.jpg";
+import 상담 from "./img/상담진행.png";
+
 
 function scrollToSection(id) {
   const section = document.getElementById(id);
@@ -147,7 +155,7 @@ function App() {
     <h4 className="다양한1"> 다양한 금융사기 • 사건 환불사례 </h4>
 
     {/* 🔥 여기 무한 롤링 시작 */}
-    {/*<div className="rolling-container">
+    <div className="rolling-container">
       <div className="rolling-track">
 
         <div className="rolling-card">
@@ -166,24 +174,33 @@ function App() {
           <img src={roll4} alt="roll4" />
         </div>
         <div className="rolling-card">
-          <img src={roll1} alt="roll1" />
+          <img src={roll5} alt="roll5" />
         </div>
 
         <div className="rolling-card">
-          <img src={roll2} alt="roll2" />
+          <img src={roll6} alt="roll2" />
         </div>
 
         <div className="rolling-card">
-          <img src={roll3} alt="roll3" />
+          <img src={roll7} alt="roll3" />
         </div>
 
         <div className="rolling-card">
-          <img src={roll4} alt="roll4" />
+          <img src={roll8} alt="roll4" />
+        </div>
+        <div className="rolling-card">
+          <img src={roll9} alt="roll4" />
+        </div>
+        <div className="rolling-card">
+          <img src={roll10} alt="roll4" />
+        </div>
+        <div className="rolling-card">
+          <img src={roll11} alt="roll4" />
         </div>
 
         
       </div>
-    </div>}
+    </div>
     {/* 🔥 무한 롤링 끝 */}
 
   </div>
