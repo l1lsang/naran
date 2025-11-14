@@ -517,7 +517,7 @@ h6.n {
   font-size:20px;
   font-weight: 380;
   color:#3f3e3e;
-  margin-bottom:200px;
+  margin-bottom:80px;
 }
 .rolling-container {
   overflow: hidden;
@@ -565,4 +565,7 @@ h6.n {
 
 .row1 {
   grid-template-columns: repeat(1, 1fr);
+}
+.밑줄 {
+  margin-bottom: 30px;
 }
