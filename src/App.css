@@ -2496,7 +2496,7 @@ main {
   }
 
   .hero-stats-bar {
-    margin-top: 34px;
+    margin-top: 54px;
     margin-bottom: 0;
     border-radius: 20px;
     padding: 12px 14px;
@@ -3136,7 +3136,7 @@ main {
   }
 
   .hero-stats-bar {
-    margin-top: 28px;
+    margin-top: 48px;
     margin-bottom: 0;
     padding: clamp(8px, 2.8vw, 12px);
   }
