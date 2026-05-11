@@ -1898,92 +1898,19 @@ main {
 
 .company-detail-kakao-banner {
   margin-top: 28px;
-  min-height: 138px;
-  padding: 24px 28px;
   border-radius: 10px;
-  background:
-    linear-gradient(90deg, rgba(255, 222, 0, 0.94) 0%, rgba(255, 236, 96, 0.95) 46%, rgba(255, 250, 220, 0.96) 100%);
-  color: #241f12;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 22px;
   overflow: hidden;
-  position: relative;
+  display: block;
+  background: #f9df20;
+  text-decoration: none;
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
 }
 
-.company-detail-kakao-banner::after {
-  content: '';
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.32);
-  position: absolute;
-  right: -82px;
-  bottom: -112px;
-}
-
-.company-detail-kakao-copy {
-  min-width: 0;
-  display: grid;
-  gap: 7px;
-  position: relative;
-  z-index: 1;
-}
-
-.company-detail-kakao-eyebrow {
-  color: #6d5a00;
-  font-size: 13px;
-  font-weight: 900;
-  letter-spacing: 0;
-}
-
-.company-detail-kakao-copy strong {
-  color: #1f252d;
-  font-size: clamp(24px, 2vw, 34px);
-  line-height: 1.22;
-}
-
-.company-detail-kakao-copy span:last-child {
-  color: #4b4321;
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1.45;
-}
-
-.company-detail-kakao-brand {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 1;
-}
-
-.company-detail-kakao-brand > img {
-  width: min(170px, 18vw);
+.company-detail-kakao-banner img {
+  width: 100%;
   height: auto;
-  display: block;
-  object-fit: contain;
-}
-
-.company-detail-kakao-brand span {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: #181600;
-  display: grid;
-  place-items: center;
-  box-shadow: 0 12px 20px rgba(51, 40, 0, 0.2);
-}
-
-.company-detail-kakao-brand span img {
-  width: 38px;
-  height: 38px;
   display: block;
 }
 
@@ -3018,20 +2945,6 @@ main {
 
   .company-detail-kakao-banner {
     margin-top: 20px;
-    min-height: 0;
-    padding: 20px;
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 18px;
-  }
-
-  .company-detail-kakao-brand {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .company-detail-kakao-brand > img {
-    width: min(150px, 48vw);
   }
 
   .lawyers-page {
@@ -3402,30 +3315,7 @@ main {
   }
 
   .company-detail-kakao-banner {
-    padding: 17px;
     border-radius: 8px;
-  }
-
-  .company-detail-kakao-eyebrow {
-    font-size: 11px;
-  }
-
-  .company-detail-kakao-copy strong {
-    font-size: clamp(20px, 5.8vw, 25px);
-  }
-
-  .company-detail-kakao-copy span:last-child {
-    font-size: 12px;
-  }
-
-  .company-detail-kakao-brand span {
-    width: 54px;
-    height: 54px;
-  }
-
-  .company-detail-kakao-brand span img {
-    width: 32px;
-    height: 32px;
   }
 
   .lawyers-page-head h2 {

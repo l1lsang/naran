@@ -33,6 +33,7 @@ import icon4Img from './assets/icon4.png'
 import ssImg from './assets/ss.png'
 import logoImg from './assets/logo.png'
 import kakaoIconImg from './assets/kakao.png'
+import naranKakaoBannerImg from './assets/나란kakao.jpg'
 import law1Img from './assets/law1.png'
 import law2Img from './assets/law2.png'
 import law3Img from './assets/law3.png'
@@ -2940,17 +2941,7 @@ function App() {
                       rel="noreferrer noopener"
                       aria-label="법무법인 나란 카카오톡 상담 열기"
                     >
-                      <span className="company-detail-kakao-copy">
-                        <span className="company-detail-kakao-eyebrow">나란 KAKAO</span>
-                        <strong>피해 회복 상담이 필요하다면</strong>
-                        <span>현재 상황을 남겨주시면 전담팀이 확인 후 안내드립니다.</span>
-                      </span>
-                      <span className="company-detail-kakao-brand" aria-hidden="true">
-                        <img src={logoImg} alt="" />
-                        <span>
-                          <img src={kakaoIconImg} alt="" />
-                        </span>
-                      </span>
+                      <img src={naranKakaoBannerImg} alt="법무법인 나란 카카오톡 상담 안내" />
                     </a>
                   </article>
                 ) : companyCasesLoaded ? (
