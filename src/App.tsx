@@ -805,6 +805,7 @@ function App() {
   const heroStatsBarRef = useRef<HTMLDivElement | null>(null)
   const companyDetailImageRef = useRef<HTMLDivElement | null>(null)
   const companyDetailCopyRef = useRef<HTMLDivElement | null>(null)
+  const companyDetailStackedRef = useRef(false)
   const shouldScrollToQuickFormRef = useRef(false)
   const adminEnrollmentInProgressRef = useRef(false)
   const ineligibleIncidentBlockInProgressRef = useRef(false)
@@ -988,6 +989,7 @@ function App() {
   }, [route])
 
   useEffect(() => {
+    companyDetailStackedRef.current = false
     setCompanyDetailStacked(false)
 
     if (route !== 'companies' || !selectedCompanyCase) {
@@ -1005,11 +1007,19 @@ function App() {
     const updateDetailLayout = () => {
       window.cancelAnimationFrame(frameId)
       frameId = window.requestAnimationFrame(() => {
+        if (companyDetailStackedRef.current) {
+          return
+        }
+
         const imageHeight = imageElement.getBoundingClientRect().height
         const copyHeight = copyElement.getBoundingClientRect().height
-        const shouldStack = copyHeight > imageHeight + 16
+        const baselineImageHeight = Math.max(imageHeight, 320)
+        const shouldStack = copyHeight > baselineImageHeight + 16
 
-        setCompanyDetailStacked((previous) => (previous === shouldStack ? previous : shouldStack))
+        if (shouldStack) {
+          companyDetailStackedRef.current = true
+          setCompanyDetailStacked(true)
+        }
       })
     }
 
