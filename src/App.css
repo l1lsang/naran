@@ -1896,8 +1896,11 @@ main {
   cursor: pointer;
 }
 
-.company-detail-kakao-banner {
+.company-detail-kakao-section {
   margin-top: 28px;
+}
+
+.company-detail-kakao-banner {
   border-radius: 10px;
   overflow: hidden;
   display: block;
@@ -2943,7 +2946,7 @@ main {
     font-size: 15px;
   }
 
-  .company-detail-kakao-banner {
+  .company-detail-kakao-section {
     margin-top: 20px;
   }
 

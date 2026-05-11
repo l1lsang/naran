@@ -2917,33 +2917,38 @@ function App() {
             <div className="section-wrap companies-grid-wrap">
               {selectedCompanyCaseId ? (
                 selectedCompanyCase ? (
-                  <article className="company-detail">
-                    <button type="button" className="company-detail-back" onClick={() => navigateToRoute('companies')}>
-                      목록으로
-                    </button>
-                    <div className="company-detail-layout">
-                      <div className="company-detail-image-wrap">
-                        <img src={selectedCompanyCase.image} alt={`${selectedCompanyCase.name} 이미지`} />
+                  <>
+                    <article className="company-detail">
+                      <button type="button" className="company-detail-back" onClick={() => navigateToRoute('companies')}>
+                        목록으로
+                      </button>
+                      <div className="company-detail-layout">
+                        <div className="company-detail-image-wrap">
+                          <img src={selectedCompanyCase.image} alt={`${selectedCompanyCase.name} 이미지`} />
+                        </div>
+                        <div className="company-detail-copy">
+                          <p className="company-detail-service">{selectedCompanyCase.service}</p>
+                          <h3>{selectedCompanyCase.name}</h3>
+                          <p className="company-detail-description">{selectedCompanyCase.description}</p>
+                          <button type="button" className="company-detail-cta" onClick={moveToQuickFormSection}>
+                            신청 바로가기
+                          </button>
+                        </div>
                       </div>
-                      <div className="company-detail-copy">
-                        <p className="company-detail-service">{selectedCompanyCase.service}</p>
-                        <h3>{selectedCompanyCase.name}</h3>
-                        <p className="company-detail-description">{selectedCompanyCase.description}</p>
-                        <button type="button" className="company-detail-cta" onClick={moveToQuickFormSection}>
-                          신청 바로가기
-                        </button>
-                      </div>
-                    </div>
-                    <a
-                      className="company-detail-kakao-banner"
-                      href={KAKAO_OPEN_CHAT_URL}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                      aria-label="법무법인 나란 카카오톡 상담 열기"
-                    >
-                      <img src={naranKakaoBannerImg} alt="법무법인 나란 카카오톡 상담 안내" />
-                    </a>
-                  </article>
+                    </article>
+
+                    <section className="company-detail-kakao-section" aria-label="카카오톡 상담 배너">
+                      <a
+                        className="company-detail-kakao-banner"
+                        href={KAKAO_OPEN_CHAT_URL}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        aria-label="법무법인 나란 카카오톡 상담 열기"
+                      >
+                        <img src={naranKakaoBannerImg} alt="법무법인 나란 카카오톡 상담 안내" />
+                      </a>
+                    </section>
+                  </>
                 ) : companyCasesLoaded ? (
                   <div className="company-detail company-detail-empty">
                     <p>게시물을 찾을 수 없습니다.</p>
