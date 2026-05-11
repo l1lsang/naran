@@ -204,6 +204,39 @@ const DEFAULT_SEO_KEYWORDS = [
   '무료상담',
 ].join(', ')
 
+const NAVER_TRACKING_KEYWORD_PARAMS = ['n_query', 'n_keyword'] as const
+const TRACKED_NAVER_KEYWORD_LIMIT = 120
+
+const normalizeTrackedNaverKeyword = (value: unknown): string =>
+  toTrimmedString(value)
+    .replace(/[\r\n\t]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .slice(0, TRACKED_NAVER_KEYWORD_LIMIT)
+
+const getNaverTrackedKeywordFromQueryString = (queryString: string): string => {
+  const normalizedQueryString = queryString.trim().replace(/^\?/, '')
+
+  if (!normalizedQueryString) {
+    return ''
+  }
+
+  try {
+    const params = new URLSearchParams(normalizedQueryString)
+
+    for (const paramName of NAVER_TRACKING_KEYWORD_PARAMS) {
+      const keyword = normalizeTrackedNaverKeyword(params.get(paramName))
+
+      if (keyword) {
+        return keyword
+      }
+    }
+  } catch {
+    return ''
+  }
+
+  return ''
+}
+
 const SEO_META_BY_ROUTE: Record<PageRoute, SeoMeta> = {
   home: {
     title: '법무법인 나란 | 금융사기 피해회복 상담',
@@ -873,15 +906,25 @@ function App() {
   const [heroStatsShouldAnimate, setHeroStatsShouldAnimate] = useState(false)
 
   const landingPath = window.location.pathname || '/'
+  const landingSearch = window.location.search || ''
   const landingToken = useMemo(() => getPowerlinkTokenFromPath(landingPath), [landingPath])
+  const trackedNaverKeyword = useMemo(
+    () => getNaverTrackedKeywordFromQueryString(landingSearch),
+    [landingSearch],
+  )
   const landingPowerlinkKeyword = useMemo(() => {
+    if (trackedNaverKeyword) {
+      return trackedNaverKeyword
+    }
+
     if (!landingToken) {
       return ''
     }
 
     const matchedLink = powerlinkLinks.find((item) => item.token === landingToken)
     return matchedLink?.keyword ?? ''
-  }, [landingToken, powerlinkLinks])
+  }, [landingToken, powerlinkLinks, trackedNaverKeyword])
+  const isNaverPowerlinkVisit = Boolean(landingToken || trackedNaverKeyword)
   const showHeroTypingCursor = route === 'home' && heroTypedText.length < HERO_TYPING_TEXT.length
   const companiesBannerTypingText = isCompactViewport
     ? COMPANIES_BANNER_TYPING_TEXT_MOBILE
@@ -1802,7 +1845,7 @@ function App() {
         body: JSON.stringify({
           action: 'block-ineligible-incident',
           incidentAfter2025: 'no',
-          source: landingToken ? 'naver-powerlink' : 'website-quick-form',
+          source: isNaverPowerlinkVisit ? 'naver-powerlink' : 'website-quick-form',
           pagePath: getRoutePath(route),
           landingPath,
           landingToken,
@@ -1904,7 +1947,7 @@ function App() {
           phone,
           details,
           incidentAfter2025: consultationAfter2025Input,
-          source: landingToken ? 'naver-powerlink' : 'website-quick-form',
+          source: isNaverPowerlinkVisit ? 'naver-powerlink' : 'website-quick-form',
           pagePath: getRoutePath(route),
           landingPath,
           landingToken,

@@ -271,9 +271,41 @@ const decodePowerlinkKeyword = (token) => {
 
     const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]).toString('utf8').trim()
     return decrypted.slice(0, LIMITS.landingKeyword)
-  } catch (error) {
+  } catch {
     return ''
   }
+}
+
+const NAVER_TRACKING_KEYWORD_PARAMS = ['n_query', 'n_keyword']
+
+const normalizeTrackedNaverKeyword = (value) =>
+  toTrimmedString(value)
+    .replace(/[\r\n\t]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .slice(0, LIMITS.landingKeyword)
+
+const getNaverTrackedKeywordFromQueryString = (queryString) => {
+  const normalizedQueryString = toTrimmedString(queryString).replace(/^\?/, '')
+
+  if (!normalizedQueryString) {
+    return ''
+  }
+
+  try {
+    const params = new URLSearchParams(normalizedQueryString)
+
+    for (const paramName of NAVER_TRACKING_KEYWORD_PARAMS) {
+      const keyword = normalizeTrackedNaverKeyword(params.get(paramName))
+
+      if (keyword) {
+        return keyword
+      }
+    }
+  } catch {
+    return ''
+  }
+
+  return ''
 }
 
 const validateConsultationPayload = (payload) => {
@@ -289,10 +321,15 @@ const validateConsultationPayload = (payload) => {
   const referrer = toTrimmedString(payload.referrer)
   const rawVisitSource = toTrimmedString(payload.visitSource)
   const userAgent = toTrimmedString(payload.userAgent)
-  const landingKeyword = decodePowerlinkKeyword(landingToken)
+  const trackedNaverKeyword = getNaverTrackedKeywordFromQueryString(queryString)
+  const landingKeyword = decodePowerlinkKeyword(landingToken) || trackedNaverKeyword
+  const resolvedSource =
+    source === 'website-quick-form' && (landingToken || trackedNaverKeyword)
+      ? 'naver-powerlink'
+      : source
   const visitSource = detectVisitSource({
     visitSource: rawVisitSource,
-    source,
+    source: resolvedSource,
     landingToken,
     queryString,
     referrer,
@@ -319,7 +356,7 @@ const validateConsultationPayload = (payload) => {
     throw new HttpError(400, `피해 내용은 ${LIMITS.details}자 이하로 입력해주세요.`)
   }
 
-  if (source.length > LIMITS.source) {
+  if (resolvedSource.length > LIMITS.source) {
     throw new HttpError(400, '접수 출처(source) 길이가 너무 깁니다.')
   }
 
@@ -356,7 +393,7 @@ const validateConsultationPayload = (payload) => {
     phone,
     details,
     incidentAfter2025,
-    source,
+    source: resolvedSource,
     pagePath,
     landingPath,
     landingToken,
@@ -378,10 +415,15 @@ const validateIneligibleIncidentBlockPayload = (payload) => {
   const referrer = toTrimmedString(payload.referrer)
   const rawVisitSource = toTrimmedString(payload.visitSource)
   const userAgent = toTrimmedString(payload.userAgent)
-  const landingKeyword = decodePowerlinkKeyword(landingToken)
+  const trackedNaverKeyword = getNaverTrackedKeywordFromQueryString(queryString)
+  const landingKeyword = decodePowerlinkKeyword(landingToken) || trackedNaverKeyword
+  const resolvedSource =
+    source === 'website-quick-form' && (landingToken || trackedNaverKeyword)
+      ? 'naver-powerlink'
+      : source
   const visitSource = detectVisitSource({
     visitSource: rawVisitSource,
-    source,
+    source: resolvedSource,
     landingToken,
     queryString,
     referrer,
@@ -392,7 +434,7 @@ const validateIneligibleIncidentBlockPayload = (payload) => {
     throw new HttpError(400, '차단 대상이 아닙니다.')
   }
 
-  if (source.length > LIMITS.source) {
+  if (resolvedSource.length > LIMITS.source) {
     throw new HttpError(400, '접수 출처(source) 길이가 너무 깁니다.')
   }
 
@@ -426,7 +468,7 @@ const validateIneligibleIncidentBlockPayload = (payload) => {
 
   return {
     incidentAfter2025,
-    source,
+    source: resolvedSource,
     pagePath,
     landingPath,
     landingToken,
@@ -459,6 +501,7 @@ const formatPhoneForDisplay = (phone) => {
 const buildTelegramMessage = (request) => {
   const formattedPhone = formatPhoneForDisplay(request.phone)
   const details = toTrimmedString(request.details)
+  const landingKeyword = toTrimmedString(request.landingKeyword)
   const visitSourceLabel = formatVisitSourceForDisplay(
     detectVisitSource({
       visitSource: request.visitSource,
@@ -477,6 +520,7 @@ const buildTelegramMessage = (request) => {
     `👤 이름: ${request.name}`,
     `📞 연락처: ${formattedPhone}`,
     `🗓️ 25년 이후 사건: ${formatYesNoForDisplay(request.incidentAfter2025)}`,
+    ...(landingKeyword ? [`🔎 검색어: ${landingKeyword}`] : []),
     `✅ 피해내용: ${details}`,
   ].join('\n')
 }
@@ -550,7 +594,7 @@ const appendGoogleSheet = async (request) => {
 
   await sheets.spreadsheets.values.append({
     spreadsheetId,
-    range: `${sheetName}!A:D`,
+    range: `${sheetName}!A:E`,
     valueInputOption: 'USER_ENTERED',
     insertDataOption: 'INSERT_ROWS',
     requestBody: {
@@ -560,6 +604,7 @@ const appendGoogleSheet = async (request) => {
           formatPhoneForDisplay(request.phone),
           formatYesNoForDisplay(request.incidentAfter2025),
           request.details,
+          toTrimmedString(request.landingKeyword),
         ],
       ],
     },
