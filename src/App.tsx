@@ -851,8 +851,6 @@ function App() {
   const [consultationDetailsInput, setConsultationDetailsInput] = useState('')
   const [consultationAfter2025Input, setConsultationAfter2025Input] = useState<ConsultationYesNo>('')
   const [consultationAfter2025Locked, setConsultationAfter2025Locked] = useState(false)
-  const [consultationDamageOverFiveMillionInput, setConsultationDamageOverFiveMillionInput] =
-    useState<ConsultationYesNo>('')
   const [consultationBusy, setConsultationBusy] = useState(false)
   const [consultationNotice, setConsultationNotice] = useState('')
   const [consultationError, setConsultationError] = useState('')
@@ -1839,10 +1837,6 @@ function App() {
     setConsultationError('')
   }
 
-  const handleConsultationDamageOverFiveMillionChange = (value: Exclude<ConsultationYesNo, ''>) => {
-    setConsultationDamageOverFiveMillionInput(value)
-  }
-
   const handleConsultationSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setConsultationError('')
@@ -1854,13 +1848,6 @@ function App() {
 
     if (consultationAfter2025Input !== 'yes') {
       const message = '2025년 이후 사건만 신청할 수 있습니다.'
-      setConsultationError(message)
-      window.alert(message)
-      return
-    }
-
-    if (!consultationDamageOverFiveMillionInput) {
-      const message = '500만원 이상 피해 여부를 선택해주세요.'
       setConsultationError(message)
       window.alert(message)
       return
@@ -1909,7 +1896,6 @@ function App() {
           phone,
           details,
           incidentAfter2025: consultationAfter2025Input,
-          damageOverFiveMillion: consultationDamageOverFiveMillionInput,
           source: landingToken ? 'naver-powerlink' : 'website-quick-form',
           pagePath: getRoutePath(route),
           landingPath,
@@ -1935,7 +1921,6 @@ function App() {
       setConsultationDetailsInput('')
       setConsultationAfter2025Input('')
       setConsultationAfter2025Locked(false)
-      setConsultationDamageOverFiveMillionInput('')
       sendGoogleAdsConsultationConversion()
       window.alert('신청이 완료되었습니다.')
     } catch (error) {
@@ -1974,35 +1959,6 @@ function App() {
                 onChange={() => handleConsultationAfter2025Change(value)}
                 required
                 disabled={consultationBusy || consultationAfter2025Locked}
-              />
-              <span>{value === 'yes' ? '예' : '아니요'}</span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      <div
-        className="consultation-choice-field"
-        role="radiogroup"
-        aria-labelledby={`${namePrefix}-damage-over-five-million-title`}
-      >
-        <p className="consultation-choice-title" id={`${namePrefix}-damage-over-five-million-title`}>
-          500만원 이상 피해입니까
-        </p>
-        <div className="consultation-choice-options">
-          {(['yes', 'no'] as const).map((value) => (
-            <label
-              className={`consultation-choice-option ${consultationBusy ? 'consultation-choice-option-disabled' : ''}`}
-              key={`${namePrefix}-damage-over-five-million-${value}`}
-            >
-              <input
-                type="radio"
-                name={`${namePrefix}-damage-over-five-million`}
-                value={value}
-                checked={consultationDamageOverFiveMillionInput === value}
-                onChange={() => handleConsultationDamageOverFiveMillionChange(value)}
-                required
-                disabled={consultationBusy}
               />
               <span>{value === 'yes' ? '예' : '아니요'}</span>
             </label>

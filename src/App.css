@@ -100,7 +100,7 @@
 }
 
 .menu a {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--ink);
@@ -1390,12 +1390,11 @@ main {
   min-width: 0;
   display: grid;
   grid-template-columns:
-    minmax(82px, 0.68fr)
-    minmax(112px, 0.88fr)
-    minmax(142px, 1.05fr)
-    minmax(142px, 1.05fr)
-    minmax(140px, 1.75fr)
-    minmax(92px, 0.74fr);
+    minmax(96px, 0.72fr)
+    minmax(124px, 0.88fr)
+    minmax(154px, 1fr)
+    minmax(180px, 1.8fr)
+    minmax(92px, 0.72fr);
   align-items: center;
   gap: 7px;
 }
@@ -2779,8 +2778,8 @@ main {
   }
 
   .quick-apply-form {
-    min-width: 1040px;
-    grid-template-columns: 118px 150px 180px 204px minmax(250px, 1fr) 110px;
+    min-width: 820px;
+    grid-template-columns: 118px 150px 180px minmax(250px, 1fr) 110px;
     gap: 6px;
   }
 
@@ -3107,7 +3106,7 @@ main {
   }
 
   .menu a {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .hero-eyebrow {
@@ -3237,8 +3236,8 @@ main {
   }
 
   .quick-apply-form {
-    min-width: 940px;
-    grid-template-columns: 106px 132px 166px 186px minmax(220px, 1fr) 96px;
+    min-width: 760px;
+    grid-template-columns: 106px 132px 166px minmax(220px, 1fr) 96px;
     gap: 6px;
   }
 

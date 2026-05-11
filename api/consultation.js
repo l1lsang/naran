@@ -281,7 +281,6 @@ const validateConsultationPayload = (payload) => {
   const phone = toTrimmedString(payload.phone)
   const details = toTrimmedString(payload.details)
   const incidentAfter2025 = toTrimmedString(payload.incidentAfter2025).slice(0, LIMITS.yesNo)
-  const damageOverFiveMillion = toTrimmedString(payload.damageOverFiveMillion).slice(0, LIMITS.yesNo)
   const source = toTrimmedString(payload.source) || 'website-quick-form'
   const pagePath = toTrimmedString(payload.pagePath) || '#/'
   const landingPath = toTrimmedString(payload.landingPath) || '/'
@@ -306,10 +305,6 @@ const validateConsultationPayload = (payload) => {
 
   if (incidentAfter2025 !== 'yes') {
     throw new HttpError(400, '2025년 이후 사건만 신청할 수 있습니다.')
-  }
-
-  if (damageOverFiveMillion !== 'yes' && damageOverFiveMillion !== 'no') {
-    throw new HttpError(400, '500만원 이상 피해 여부를 선택해주세요.')
   }
 
   if (name.length > LIMITS.name) {
@@ -361,7 +356,6 @@ const validateConsultationPayload = (payload) => {
     phone,
     details,
     incidentAfter2025,
-    damageOverFiveMillion,
     source,
     pagePath,
     landingPath,
@@ -483,7 +477,6 @@ const buildTelegramMessage = (request) => {
     `👤 이름: ${request.name}`,
     `📞 연락처: ${formattedPhone}`,
     `🗓️ 25년 이후 사건: ${formatYesNoForDisplay(request.incidentAfter2025)}`,
-    `💰 500만원 이상 피해: ${formatYesNoForDisplay(request.damageOverFiveMillion)}`,
     `✅ 피해내용: ${details}`,
   ].join('\n')
 }
@@ -557,7 +550,7 @@ const appendGoogleSheet = async (request) => {
 
   await sheets.spreadsheets.values.append({
     spreadsheetId,
-    range: `${sheetName}!A:E`,
+    range: `${sheetName}!A:D`,
     valueInputOption: 'USER_ENTERED',
     insertDataOption: 'INSERT_ROWS',
     requestBody: {
@@ -566,7 +559,6 @@ const appendGoogleSheet = async (request) => {
           request.name,
           formatPhoneForDisplay(request.phone),
           formatYesNoForDisplay(request.incidentAfter2025),
-          formatYesNoForDisplay(request.damageOverFiveMillion),
           request.details,
         ],
       ],
@@ -697,7 +689,6 @@ export default async function handler(req, res) {
         phone: payload.phone,
         details: payload.details,
         incidentAfter2025: payload.incidentAfter2025,
-        damageOverFiveMillion: payload.damageOverFiveMillion,
         source: payload.source,
         pagePath: payload.pagePath,
         landingPath: payload.landingPath,
