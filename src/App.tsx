@@ -468,10 +468,16 @@ const sendGoogleAdsConsultationConversion = () => {
   })
 }
 
-const rollingImageModules = import.meta.glob<string>('./rolling/*.{png,jpg,jpeg,webp,avif,gif}', {
-  eager: true,
-  import: 'default',
-})
+const rollingImageModules = {
+  ...import.meta.glob<string>('./rolling/*.{png,jpg,jpeg,webp,avif,gif,PNG,JPG,JPEG,WEBP,AVIF,GIF}', {
+    eager: true,
+    import: 'default',
+  }),
+  ...import.meta.glob<string>('./assets/rolling/*.{png,jpg,jpeg,webp,avif,gif,PNG,JPG,JPEG,WEBP,AVIF,GIF}', {
+    eager: true,
+    import: 'default',
+  }),
+}
 
 const toRollingImageName = (path: string): string => {
   const fileName = path.split('/').pop()?.replace(/\.[^.]+$/, '') ?? '기본 롤링 이미지'
