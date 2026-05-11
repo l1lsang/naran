@@ -803,6 +803,8 @@ function App() {
   const companyImageInputRef = useRef<HTMLInputElement | null>(null)
   const quickFormSectionRef = useRef<HTMLElement | null>(null)
   const heroStatsBarRef = useRef<HTMLDivElement | null>(null)
+  const companyDetailImageRef = useRef<HTMLDivElement | null>(null)
+  const companyDetailCopyRef = useRef<HTMLDivElement | null>(null)
   const shouldScrollToQuickFormRef = useRef(false)
   const adminEnrollmentInProgressRef = useRef(false)
   const ineligibleIncidentBlockInProgressRef = useRef(false)
@@ -859,6 +861,7 @@ function App() {
   const [heroTypedText, setHeroTypedText] = useState('')
   const [companiesBannerTypedText, setCompaniesBannerTypedText] = useState('')
   const [isCompactViewport, setIsCompactViewport] = useState(() => window.matchMedia('(max-width: 900px)').matches)
+  const [companyDetailStacked, setCompanyDetailStacked] = useState(false)
   const [heroStatValues, setHeroStatValues] = useState<number[]>(() => HERO_STAT_ITEMS.map(() => 0))
   const [heroStatsShouldAnimate, setHeroStatsShouldAnimate] = useState(false)
 
@@ -983,6 +986,45 @@ function App() {
       window.cancelAnimationFrame(frameId)
     }
   }, [route])
+
+  useEffect(() => {
+    setCompanyDetailStacked(false)
+
+    if (route !== 'companies' || !selectedCompanyCase) {
+      return
+    }
+
+    const imageElement = companyDetailImageRef.current
+    const copyElement = companyDetailCopyRef.current
+
+    if (!imageElement || !copyElement) {
+      return
+    }
+
+    let frameId = 0
+    const updateDetailLayout = () => {
+      window.cancelAnimationFrame(frameId)
+      frameId = window.requestAnimationFrame(() => {
+        const imageHeight = imageElement.getBoundingClientRect().height
+        const copyHeight = copyElement.getBoundingClientRect().height
+        const shouldStack = copyHeight > imageHeight + 16
+
+        setCompanyDetailStacked((previous) => (previous === shouldStack ? previous : shouldStack))
+      })
+    }
+
+    const resizeObserver = new ResizeObserver(updateDetailLayout)
+    resizeObserver.observe(imageElement)
+    resizeObserver.observe(copyElement)
+    window.addEventListener('resize', updateDetailLayout)
+    updateDetailLayout()
+
+    return () => {
+      window.cancelAnimationFrame(frameId)
+      resizeObserver.disconnect()
+      window.removeEventListener('resize', updateDetailLayout)
+    }
+  }, [route, selectedCompanyCase])
 
   useEffect(() => {
     if (route !== 'home') {
@@ -2922,11 +2964,15 @@ function App() {
                       <button type="button" className="company-detail-back" onClick={() => navigateToRoute('companies')}>
                         목록으로
                       </button>
-                      <div className="company-detail-layout">
-                        <div className="company-detail-image-wrap">
+                      <div
+                        className={`company-detail-layout ${
+                          companyDetailStacked ? 'company-detail-layout-stacked' : ''
+                        }`}
+                      >
+                        <div className="company-detail-image-wrap" ref={companyDetailImageRef}>
                           <img src={selectedCompanyCase.image} alt={`${selectedCompanyCase.name} 이미지`} />
                         </div>
-                        <div className="company-detail-copy">
+                        <div className="company-detail-copy" ref={companyDetailCopyRef}>
                           <p className="company-detail-service">{selectedCompanyCase.service}</p>
                           <h3>{selectedCompanyCase.name}</h3>
                           <p className="company-detail-description">{selectedCompanyCase.description}</p>

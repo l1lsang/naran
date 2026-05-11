@@ -1832,6 +1832,11 @@ main {
   align-items: start;
 }
 
+.company-detail-layout-stacked {
+  grid-template-columns: 1fr;
+  gap: 22px;
+}
+
 .company-detail-image-wrap {
   border-radius: 10px;
   overflow: hidden;
@@ -1844,6 +1849,12 @@ main {
   min-height: 320px;
   display: block;
   object-fit: cover;
+}
+
+.company-detail-layout-stacked .company-detail-image-wrap img {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 122 / 73;
 }
 
 .company-detail-copy {
