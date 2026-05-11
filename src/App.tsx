@@ -45,10 +45,11 @@ type PageRoute = 'home' | 'lawyers' | 'companies'
 type AuthViewMode = 'login' | 'signup'
 type ConsultationYesNo = '' | 'yes' | 'no'
 type VisitSource = '' | 'naver' | 'google'
-type GoogleTag = (command: 'event', action: string, params: Record<string, unknown>) => void
+type GoogleTag = (...args: unknown[]) => void
 
 declare global {
   interface Window {
+    dataLayer?: unknown[]
     gtag?: GoogleTag
   }
 }
@@ -189,7 +190,7 @@ const ROUTE_PATHS: Record<PageRoute, string> = {
 
 const SITE_BASE_URL = (
   (import.meta.env.VITE_SITE_URL as string | undefined)?.trim().replace(/\/+$/, '') ||
-  'https://naranfintech.com'
+  'https://www.naranfintech.com'
 )
 
 const DEFAULT_SEO_KEYWORDS = [
@@ -462,7 +463,14 @@ const detectVisitSource = (params: {
 }
 
 const sendGoogleAdsConsultationConversion = () => {
-  window.gtag?.('event', 'conversion', {
+  window.dataLayer = window.dataLayer || []
+  window.gtag =
+    window.gtag ||
+    ((...args: unknown[]) => {
+      window.dataLayer?.push(args)
+    })
+
+  window.gtag('event', 'conversion', {
     send_to: GOOGLE_ADS_CONVERSION_SEND_TO,
     value: 1.0,
     currency: 'KRW',

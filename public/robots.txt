@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://naranfintech.com/sitemap.xml
+Sitemap: https://www.naranfintech.com/sitemap.xml
