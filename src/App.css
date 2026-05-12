@@ -1302,6 +1302,41 @@ main {
   cursor: not-allowed;
 }
 
+.consultation-privacy-agreement {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+  color: #304056;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.45;
+  cursor: pointer;
+}
+
+.consultation-privacy-agreement input[type='checkbox'] {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+  margin: 2px 0 0;
+  padding: 0;
+  accent-color: #3d79a6;
+  cursor: inherit;
+}
+
+.consultation-privacy-agreement span {
+  min-width: 0;
+}
+
+.quick-form .consultation-privacy-agreement {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(99, 119, 145, 0.28);
+  border-radius: 10px;
+  background: #eef3f7;
+  text-align: left;
+}
+
 .quick-form input:focus,
 .quick-form textarea:focus {
   outline: 2px solid rgba(61, 121, 166, 0.28);
@@ -1394,6 +1429,7 @@ main {
     minmax(124px, 0.88fr)
     minmax(154px, 1fr)
     minmax(180px, 1.8fr)
+    minmax(210px, 1.28fr)
     minmax(92px, 0.72fr);
   align-items: center;
   gap: 7px;
@@ -1452,6 +1488,22 @@ main {
 .quick-apply-form .consultation-choice-option input[type='radio'] {
   width: 14px;
   height: 14px;
+}
+
+.quick-apply-form .consultation-privacy-agreement {
+  min-height: 60px;
+  padding: 8px 10px;
+  border: 1px solid rgba(99, 119, 145, 0.28);
+  border-radius: 10px;
+  background: #eef3f7;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.quick-apply-form .consultation-privacy-agreement input[type='checkbox'] {
+  width: 14px;
+  height: 14px;
+  margin-top: 1px;
 }
 
 .quick-apply-form input:focus,
@@ -2743,6 +2795,11 @@ main {
     font-size: 15px;
   }
 
+  .quick-form .consultation-privacy-agreement {
+    padding: 11px 12px;
+    font-size: 14px;
+  }
+
   .consultation-choice-option {
     min-height: 32px;
     padding: 6px 10px;
@@ -2778,8 +2835,8 @@ main {
   }
 
   .quick-apply-form {
-    min-width: 820px;
-    grid-template-columns: 118px 150px 180px minmax(250px, 1fr) 110px;
+    min-width: 1030px;
+    grid-template-columns: 118px 150px 180px minmax(250px, 1fr) 220px 110px;
     gap: 6px;
   }
 
@@ -2810,6 +2867,12 @@ main {
   .quick-apply-form .consultation-choice-option {
     min-height: 27px;
     padding: 4px 7px;
+    font-size: 11px;
+  }
+
+  .quick-apply-form .consultation-privacy-agreement {
+    min-height: 58px;
+    padding: 6px 8px;
     font-size: 11px;
   }
 
