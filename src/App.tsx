@@ -376,6 +376,11 @@ const normalizePathname = (pathname: string): string => {
   return withoutTrailingSlash || '/'
 }
 
+const isAdminRoutePathname = (pathname: string): boolean => {
+  const cleaned = normalizePathname(pathname).toLowerCase()
+  return cleaned === ROUTE_PATHS.admin || cleaned.startsWith(`${ROUTE_PATHS.admin}/`)
+}
+
 const resolveRoute = (pathname: string): PageRoute => {
   const cleaned = normalizePathname(pathname).toLowerCase()
 
@@ -387,7 +392,7 @@ const resolveRoute = (pathname: string): PageRoute => {
     return 'companies'
   }
 
-  if (cleaned === ROUTE_PATHS.admin || cleaned.startsWith(`${ROUTE_PATHS.admin}/`)) {
+  if (isAdminRoutePathname(cleaned)) {
     return 'admin'
   }
 
@@ -510,7 +515,19 @@ const detectVisitSource = (params: {
 
 let googleAdsTagConfigured = false
 
-const initializeGoogleAdsTag = () => {
+const isGoogleAdsTrackingAllowed = (): boolean => !isAdminRoutePathname(window.location.pathname)
+
+const removeGoogleAdsTag = () => {
+  document.getElementById(GOOGLE_ADS_SCRIPT_ID)?.remove()
+  googleAdsTagConfigured = false
+}
+
+const initializeGoogleAdsTag = (): GoogleTag | null => {
+  if (!isGoogleAdsTrackingAllowed()) {
+    removeGoogleAdsTag()
+    return null
+  }
+
   window.dataLayer = window.dataLayer || []
   window.gtag =
     window.gtag ||
@@ -531,13 +548,14 @@ const initializeGoogleAdsTag = () => {
     window.gtag('config', GOOGLE_ADS_ID)
     googleAdsTagConfigured = true
   }
+
+  return window.gtag ?? null
 }
 
 const sendGoogleAdsConsultationConversion = () => {
-  initializeGoogleAdsTag()
-  const gtag = window.gtag
+  const gtag = initializeGoogleAdsTag()
 
-  if (!gtag) {
+  if (!gtag || !isGoogleAdsTrackingAllowed()) {
     return
   }
 
@@ -1007,6 +1025,12 @@ function App() {
     upsertCanonicalLink(canonicalUrl)
     upsertRouteStructuredData(getRouteStructuredData(route, seoMeta, canonicalUrl))
   }, [route, landingPowerlinkKeyword])
+
+  useEffect(() => {
+    if (route === 'admin') {
+      removeGoogleAdsTag()
+    }
+  }, [route])
 
   const displayRollingCases = useMemo<RollingDisplayItem[]>(
     () => [...defaultRollingCards, ...rollingCases.map((item) => ({ ...item, kind: 'case' as const }))],
